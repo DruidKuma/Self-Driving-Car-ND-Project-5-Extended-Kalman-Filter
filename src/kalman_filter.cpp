@@ -43,8 +43,16 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  VectorXd z_pred = H_ * x_;
-  VectorXd y = z - z_pred;
+  //get predicted values
+  float px = x_[0];
+  float py = x_[1];
+  float vx = x_[2];
+  float vy = x_[3];
+  
+  VectorXd hx(3);
+  hx << sqrt(px * px + py * py), atan2(py, px), (px * vx + py * vy) / rho;
+
+  VectorXd y = z - hx;
   
   // if phi is not in the range (-pi, pi), put it in that range
   float pi = 3.14159;
